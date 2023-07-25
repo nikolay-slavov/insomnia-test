@@ -1,0 +1,21 @@
+_id: req_362b8722aad046488e56d283a3a2cdbc
+type: Request
+parentId: wrk_a6321978a4a44aa18f2ecd14d1dd9dc1
+modified: 1690294816995
+created: 1690294796322
+url: http://localhost:3002/login
+name: New Request
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1690294796322
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

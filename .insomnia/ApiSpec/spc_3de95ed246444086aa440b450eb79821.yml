@@ -1,0 +1,437 @@
+_id: spc_3de95ed246444086aa440b450eb79821
+type: ApiSpec
+parentId: wrk_a6321978a4a44aa18f2ecd14d1dd9dc1
+modified: 1690294776907
+created: 1690294649163
+fileName: New Document
+contents: >
+  swagger: "2.0"
+
+  info:
+    title: Customer API
+    version: 0.0.1
+    description: "Desc"
+    contact: 
+      email: "test@email.com"
+  host: toki-api-dev.apigateway.toki-api-dev.cloud.goog
+
+  schemes:
+    - https
+  parameters:
+    customerId:
+      name: customerId
+      in: path
+      description: The id of the customer
+      required: true
+      type: string
+    meteringPointId:
+      name: meteringPointId
+      in: path
+      description: The id of the metering point
+      required: true
+      type: string
+    invoiceId:
+      name: invoiceId
+      in: path
+      description: The id of the invoice
+      required: true
+      type: string
+    customerIdQuery:
+      name: customerId
+      in: query
+      description: The id of the customer
+      required: false
+      type: string
+    meteringPointIdQuery:
+      name: meteringPointId
+      in: query
+      description: The id of the metering point
+      required: false
+      type: string
+  definitions:
+    # REUSABLE MODELS
+    customer:
+      type: object
+      properties:
+        id:
+          type: string
+          description: EIK, EGN or Bulstat
+        name:
+          type: string
+        address:
+          type: string
+        vatNumber:
+          type: string
+        representatives:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+    contact:
+      type: object
+      properties:
+        id:
+          type: string
+          description: EIK, EGN or Bulstat
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        phoneMobile:
+          type: string
+    price:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+        currency:
+          type: string
+    tax:
+      type: object
+      properties:
+        totalPrice:
+          $ref: "#/definitions/price"
+        pricePerUnit:
+          $ref: "#/definitions/price"
+    consumedEnergy:
+      type: object
+      properties:
+        amount:
+          type: object
+          properties:
+            amount:
+              type: number
+              format: float
+            unit:
+              type: string
+              description: kWh, MWh, GWh
+        totalPrice:
+          $ref: "#/definitions/price"
+        pricePerUnit:
+          $ref: "#/definitions/price"
+
+    #  RESPONSES
+    CustomerResponse:
+      $ref: "#/definitions/customer"
+
+    CustomerDetailsResponse:
+      type: object
+      properties:
+        details:
+          $ref: "#/definitions/customer"
+        meteringPointsCount:
+          type: integer
+          format: int64
+          description: The count of metering points associated with this customer
+        totalAmountDue:
+          type: number
+          format: float
+          description: The total amount due for all invoices associated with this customer
+        totalConsumedEnergy:
+          type: number
+          format: float
+          description: The total consumed energy for all invoices associated with this customer
+        contacts:
+          type: array
+          items:
+            $ref: "#/definitions/contact"
+        activeContract:
+          type: object
+          properties:
+            plan:
+              type: string
+            startDate:
+              type: string
+              format: date
+            updatedDate:
+              type: string
+              format: date
+            greenEnergyPercent:
+              type: number
+              description: Only set for green energy plans. Represents the percentage of green energy guaranteed by the plan.
+              format: int
+            fixedPrice:
+              $ref: "#/definitions/price" # only set for fixed price plans
+
+    ContactResponse:
+      $ref: "#/definitions/contact"
+
+    MeteringPointResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: a unique identifier of each entry
+        customer:
+          $ref: "#/definitions/customer"
+        name:
+          type: string
+        erp:
+          type: string
+        profile:
+          type: string
+        address:
+          type: string
+
+    MeteringPointDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: a unique identifier of each entry
+        customer:
+          $ref: "#/definitions/customer"
+        name:
+          type: string
+        erp:
+          type: string
+        profile:
+          type: string
+        address:
+          type: string
+        totalAmountDue:
+          $ref: "#/definitions/price"
+        totalConsumedEnergy:
+          type: number
+          format: float
+          description: The total consumed energy for all invoices associated with this metering point
+
+    InvoiceResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: a unique identifier of each entry
+        customer:
+          $ref: "#/definitions/customer"
+        number:
+          type: string
+        date:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        totalAmountDue:
+          $ref: "#/definitions/price"
+        meteringPointsCount:
+          type: integer
+          format: int64
+          description: The count of metering points in this invoice
+        downloadUrl:
+          type: string
+          format: url
+
+    InvoiceDetailsResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: a unique identifier of each entry
+        customer:
+          $ref: "#/definitions/customer"
+        number:
+          type: string
+        date:
+          type: string
+          format: date
+        dueDate:
+          type: string
+          format: date
+        meteringPointsCount:
+          type: integer
+          format: int64
+          description: The count of metering points in this invoice
+        downloadUrl:
+          type: string
+          format: url
+        totalCostWithVat:
+          $ref: "#/definitions/price"
+        totalInvoiceCost:
+          $ref: "#/definitions/price"
+        totalInvoiceWords:
+          type: string
+        totalCost:
+          $ref: "#/definitions/price"
+        sumActive:
+          $ref: "#/definitions/price"
+        consumedEnergy:
+          $ref: "#/definitions/consumedEnergy"
+        communityTax:
+          $ref: "#/definitions/tax"
+        tax:
+          $ref: "#/definitions/tax"
+        networkTax:
+          $ref: "#/definitions/tax"
+        compensation:
+          $ref: "#/definitions/price"
+
+        meteringPoints:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: a unique identifier of each entry
+              name:
+                type: string
+              address:
+                type: string
+              plan:
+                type: string
+              fixedPrice:
+                $ref: "#/definitions/price" # only set for fixed price plans
+              erp:
+                type: string
+              profile:
+                type: string
+              totalCost:
+                $ref: "#/definitions/price"
+              consumedEnergy:
+                $ref: "#/definitions/consumedEnergy"
+              communityTax:
+                $ref: "#/definitions/tax"
+              tax:
+                $ref: "#/definitions/tax"
+
+  paths:
+    /customers:
+      get:
+        description: Returns all customers that the user is associated with
+        produces:
+          - application/json
+        responses:
+          "200":
+            description: A list of customers.
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: "#/definitions/CustomerResponse"
+
+    /customers/{customerId}:
+      get:
+        description: Returns all customers that the user is associated with
+        produces:
+          - application/json
+        parameters:
+          - $ref: "#/parameters/customerId"
+        responses:
+          "200":
+            description: A customer's details
+            schema:
+              $ref: "#/definitions/CustomerDetailsResponse"
+
+    /metering-points:
+      get:
+        description: Returns all metering points that the user is associated with
+        produces:
+          - application/json
+        parameters:
+          - $ref: "#/parameters/customerIdQuery"
+
+        responses:
+          "200":
+            description: A list of metering points.
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: "#/definitions/MeteringPointResponse"
+
+    /metering-points/{meteringPointId}:
+      get:
+        description: Returns all metering points that the user is associated with
+        produces:
+          - application/json
+        parameters:
+          - $ref: "#/parameters/meteringPointId"
+        responses:
+          "200":
+            description: A metering point's details
+            schema:
+              $ref: "#/definitions/MeteringPointDetailsResponse"
+
+    /invoices:
+      get:
+        description: Returns all invoices that the user is associated with
+        produces:
+          - application/json
+        parameters:
+          - $ref: "#/parameters/customerIdQuery"
+          - $ref: "#/parameters/meteringPointIdQuery"
+
+        responses:
+          "200":
+            description: A list of invoices.
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: "#/definitions/InvoiceResponse"
+
+    /invoices/{invoiceId}:
+      get:
+        description: Returns all invoices that the user is associated with
+        produces:
+          - application/json
+        parameters:
+          - $ref: "#/parameters/invoiceId"
+        responses:
+          "200":
+            description: An invoice's details
+            schema:
+              $ref: "#/definitions/InvoiceDetailsResponse"
+
+    /customer-contacts:
+      get:
+        description: Returns all contacts that the customer is associated with
+        produces:
+          - application/json
+        parameters:
+          - $ref: "#/parameters/customerIdQuery"
+        responses:
+          "200":
+            description: A list of customer contacts.
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: "#/definitions/ContactResponse"
+
+    /metering-point-contacts:
+      get:
+        description: Returns all contacts that the metering point is associated with
+        produces:
+          - application/json
+        parameters:
+          - name: meteringPointId
+            in: query
+            description: Filter by metering point ID
+            required: false
+            type: string
+        responses:
+          "200":
+            description: A list of metering point contacts.
+            schema:
+              type: object
+              properties:
+                items:
+                  type: array
+                  items:
+                    $ref: "#/definitions/ContactResponse"
+contentType: yaml
